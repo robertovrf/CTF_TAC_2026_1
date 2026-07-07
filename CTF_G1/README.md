@@ -1,138 +1,59 @@
-# 🎓 UnB Comprometida — CTF
-
-> **Capture The Flag** desenvolvido como trabalho final da disciplina **Tópicos Avançados em Computadores** — Universidade de Brasília (UnB)
-
----
-
-## 📖 Sobre o Desafio
-
-Você é um aluno membro do grupo de estudos **UnBreakable** e, durante análises rotineiras, deparou-se com sistemas de homologação da UnB acessíveis na rede interna — e aparentemente com várias portas e serviços vulneráveis expostos.
-
-Sua missão é realizar uma simulação de pentest completo: explorar o ambiente, encontrar as falhas, capturar as flags que comprovam a exploração de cada etapa e, ao final, ter o caminho documentado para reportar as vulnerabilidades à universidade. O caminho vai exigir reconhecimento, análise cuidadosa e encadeamento de técnicas — nada aqui é sorte.
-
-> ⚠️ **Spoiler-free zone.** O README não revela vulnerabilidades, flags ou dicas de exploração. Descubra você mesmo.
-
-**Dificuldade estimada:** Intermediária  
-**Flags no total:** 5 (+ 1 bônus)  
-**Técnicas abordadas:** Enumeração de serviços, SQL Injection, LFI (Local File Inclusion), quebra de hashes (MD5Crypt/apr1), movimentação lateral entre usuários e escalação de privilégios via PATH Hijacking (SUID) e sudo misconfiguration (GTFOBins)
+<div align="center">
+  <h1>🐺 UnB Comprometida — Capture The Flag</h1>
+  <p><em>Um desafio de cibersegurança focado em exploração de infraestrutura acadêmica.</em></p>
+</div>
 
 ---
 
-## ⚙️ Pré-requisitos
+## 📖 O Cenário
 
-Antes de começar, certifique-se de ter instalado:
+Você é um estudante membro do grupo de estudos em segurança ofensiva **UnBreakable**. Explorando a rede da universidade por pura curiosidade, você acaba esbarrando em algo inusitado: **um servidor de homologação do DETIC exposto** e acessível indevidamente. Ao reportar o achado, o professor Roberto Filho lhe confia uma missão oficial: invadir a infraestrutura e entregar um relatório técnico documentando todas as vulnerabilidades.
 
-```bash
-docker --version       # Docker Engine 20.x ou superior
-docker compose version # Docker Compose v2.x ou superior
-```
+O servidor contém réplicas do **SIGAA** e do **Aprender 3**, rodando serviços legados, configurações inseguras e diretórios esquecidos pela equipe de TI após uma manutenção malsucedida.
 
-> O CTF roda inteiramente em containers Docker, é **100% offline-friendly** (fontes e recursos externos foram localizados para evitar carregamento infinito em redes isoladas) e não exige internet ativa.
+**Sua missão:**
+Invadir a infraestrutura, escalar privilégios até assumir o controle total (root) e coletar todas as flags que comprovam a invasão. 
 
 ---
 
-## 🚀 Subindo o Ambiente
+## ✨ Por que jogar este CTF?
+
+- 🏛️ **Imersão Total:** Explore portais que imitam os sistemas reais da UnB, com *easter-eggs* interativos.
+- ⛓️ **Kill-Chain Realista:** Diferente de desafios isolados, aqui você precisará encadear técnicas: indo desde o primeiro acesso sem privilégios até a obtenção do acesso máximo ao servidor.
+- 🎯 **Dificuldade Balanceada:** Desenhado para ser desafiador, porém justo. Ideal para exercitar as técnicas de exploração web e de sistemas operacionais.
+- 🏆 **Múltiplos Caminhos:** Fique preso em uma vulnerabilidade e descubra que o sistema oferece rotas alternativas escondidas para continuar seu avanço!
+
+---
+
+## 🚩 Objetivos
+
+O ambiente contém **5 flags obrigatórias** e **1 flag bônus** escondida para os mais curiosos. Todas estão no formato padrão: `UNB{conteudo_da_flag}`. 
+
+Encontre todas, documente seus passos e entregue seu *write-up*!
+
+---
+
+## 🚀 Como subir o ambiente
+
+O CTF é **100% offline-friendly** e roda inteiramente em containers Docker, garantindo que o laboratório não vai sujar o seu sistema operacional.
+
+**Pré-requisitos:** Docker Engine (20.x+) e Docker Compose (v2.x+).
 
 **1. Clone o repositório:**
-
 ```bash
-git clone https://github.com/Mateusrb6/Trabalho-Final-TAC.git
-cd Trabalho-Final-TAC
+git clone https://github.com/robertovrf/CTF_TAC_2026_1.git
+cd CTF_TAC_2026_1/CTF_G1
 ```
 
-**2. Suba os containers:**
-
+**2. Inicie os servidores:**
 ```bash
 docker compose up -d --build
 ```
+> *O primeiro build pode levar alguns minutos enquanto o sistema configura a infraestrutura.*
 
-O primeiro build pode levar alguns minutos — o Docker vai baixar as imagens base e configurar todos os serviços.
-
-**3. Aguarde a inicialização completa:**
-
-```bash
-docker compose logs -f
-```
-
-Quando os logs pararem de rolar e você ver os serviços confirmando que estão prontos, o ambiente está acessível.
-
-**4. Verifique se tudo está rodando:**
-
-```bash
-docker compose ps
-```
-
-Ambos os containers devem estar com status `running`.
+**3. Inicie o reconhecimento!**
+Com os containers rodando, o servidor web principal estará disponível na porta 80 da sua máquina local.
+Comece acessando:
+🔗 **http://localhost**
 
 ---
-
-## 🌐 Portas Disponíveis
-
-| Serviço | Porta no Host | Protocolo |
-|---------|--------------|-----------|
-| Servidor Web | `80` | HTTP |
-| SSH | `2222` | SSH |
-| FTP | `21` | FTP |
-| FTP Passivo | `21100–21110` | FTP (dados) |
-
-> **Ponto de entrada sugerido:** comece pelo servidor web em `http://localhost` — e não esqueça de fazer uma boa enumeração antes de sair testando coisas.
-
----
-
-## 🏁 Formato das Flags
-
-As flags seguem o padrão:
-
-```
-UNB{conteudo_da_flag}
-```
-
-Quando encontrar uma, anote — você vai precisar de todas ao final.
-
-## 🛑 Encerrando o Ambiente
-
-```bash
-# Para os containers sem remover os dados
-docker compose down
-
-# Para os containers e remove tudo (use se quiser recomeçar do zero)
-docker compose down --volumes --rmi local
-```
-
----
-
-## 🔧 Troubleshooting
-
-**Conflito de portas (porta 21, 80 ou 2222 já em uso):**
-
-```bash
-# Identifique o processo usando a porta
-sudo ss -tlnp | grep :21
-sudo ss -tlnp | grep :80
-sudo ss -tlnp | grep :2222
-
-# Encerre o processo conflitante ou altere as portas no docker-compose.yml
-```
-
-**FTP em modo passivo com cliente externo:**  
-Se estiver testando FTP de outra máquina na rede (não `localhost`), edite o `unb-ftp/vsftpd.conf` e substitua `pasv_address=0.0.0.0` pelo IP real da máquina host antes de fazer o build.
-
-**Container travado na inicialização:**
-
-```bash
-docker compose logs unb-web
-docker compose logs unb-ftp
-```
-
----
-
-## 👨‍💻 Autores
-
-| Autor | GitHub |
-|-------|--------|
-| Mateus Reis | [@Mateusrb6](https://github.com/Mateusrb6) |
-| Alberto Cortes | [@oalbertocavalcante](https://github.com/oalbertocavalcante) |
-
----
-
-*Desenvolvido para a disciplina Tópicos Avançados em Computadores — UnB, 2026/1*
