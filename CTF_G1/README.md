@@ -1,3 +1,9 @@
+**Disciplina:** Tópicos Avançados em Computadores (CIC0087)  
+**Turma:** 04 — 2026/1  
+**Professor:** Roberto Rodrigues Filho, Ph.D.  
+**Grupo:** UnBreakable  
+**Autores:** Alberto Cortes, Mateus Reis  
+
 <div align="center">
   <h1>🐺 UnB Comprometida — Capture The Flag</h1>
   <p><em>Um desafio de cibersegurança focado em exploração de infraestrutura acadêmica.</em></p>
